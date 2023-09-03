@@ -8,20 +8,20 @@ import java.util.List;
 
 @Repository
 public class MovieRepository {
+
     HashMap<String,Movie> moviesDB=new HashMap<>();
 
     HashMap<String,Director> directorsDB=new HashMap<>();
 
     HashMap<String, List<String>> pairs=new HashMap<>();
 
-    public void addMovies(Movie movie) {
-        moviesDB.put(movie.getName(),movie);
-        return ;
+    public void addMovie(Movie movie) {
+        moviesDB.put(movie.getName(), movie);
     }
 
     public void addDirector(Director director) {
-        directorsDB.put(director.getName(),director);
-        return;
+        directorsDB.put(director.getName(), director);
+        directorsDB.put(director.getName(), director);
     }
 
     public void addMovieDirectorPair(String movieName, String directorName) {
@@ -31,30 +31,22 @@ public class MovieRepository {
             pairs.put(directorName,movieNamesOfDirector);
             return;
         }
-        List<String> movieNamesOfDirector=pairs.get(directorName);
+        List<String> movieNamesOfDirector = pairs.get(directorName);
         movieNamesOfDirector.add(movieName);
         pairs.put(directorName,movieNamesOfDirector);
-        return;
     }
 
-    public Movie getMovieByName(String name) {
-        if(moviesDB.containsKey(name)){
-            return moviesDB.get(name);
-        }
-        return null;
+    public Movie getMovieByName(String movieName) {
+        return moviesDB.get(movieName);
     }
 
-    public Director getDirectorByName(String name) {
-        if(directorsDB.containsKey(name)){
-            return directorsDB.get(name);
-        }
-        return null;
+    public Director getDirectorByName(String directorName) {
+        return directorsDB.get(directorName);
     }
 
-    public List<String> getMoviesByDirectorName(String director) {
-        return pairs.get(director);
+    public List<String> getMoviesByDirectorName(String directorName) {
+        return pairs.get(directorName);
     }
-
 
     public List<String> findAllMovies() {
         List<String> allMovieNames = new ArrayList<>();
@@ -64,16 +56,27 @@ public class MovieRepository {
         return allMovieNames;
     }
 
-    public void deleteDirectorByName(String name) {
+    public void deleteDirectorByName(String directorName) {
+        List<String> allMoviesByDirector = pairs.get(directorName);
+        for (String movieName : allMoviesByDirector){
+            moviesDB.remove(movieName);
+        }
+        pairs.remove(directorName);
+    }
+
+    public void deleteAllDirectors() {
         for(String directorName : pairs.keySet()){
             deleteDirectorByName(directorName);
         }
     }
 
+    public class Pair{
+        Movie movie;
+        Director director;
 
-    public void deleteAllDirectors() {
-        for(String directorName : pairs.keySet()){
-            deleteDirectorByName(directorName);
+        public Pair(Movie movie, Director director) {
+            this.movie = movie;
+            this.director = director;
         }
     }
 }
